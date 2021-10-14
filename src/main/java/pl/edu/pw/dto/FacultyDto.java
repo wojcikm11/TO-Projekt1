@@ -1,14 +1,7 @@
 package pl.edu.pw.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class FacultyDto {
 
     @Size(min = 12, max = 256)
@@ -19,5 +12,23 @@ public class FacultyDto {
 
     @Size(min = 10, max = 64)
     private String contactEmail;
+
+    public FacultyDto(String name, String address, String contactEmail) {
+        this.name = name;
+        this.address = address;
+        this.contactEmail = contactEmail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
 
 }

@@ -19,4 +19,16 @@ public class Faculty {
     @Column(length = 64, nullable = false)
     private String contactEmail;
 
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
 }
