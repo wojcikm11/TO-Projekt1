@@ -1,4 +1,9 @@
 package pl.edu.pw.dao;
 
-public interface FacultyDao {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import pl.edu.pw.entity.Faculty;
+
+@Repository
+public interface FacultyDao extends JpaRepository<Faculty, Long> {
 }
