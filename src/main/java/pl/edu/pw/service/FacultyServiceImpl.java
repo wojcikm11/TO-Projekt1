@@ -37,4 +37,15 @@ public class FacultyServiceImpl implements FacultyService {
 //        return facultyDtos;
     }
 
+    @Override
+    public Faculty add(FacultyDto facultyDto) {
+        return facultyDao.save(FacultyMapper.map(facultyDto));
+    }
+
+    private static class FacultyMapper {
+        private static Faculty map(FacultyDto facultyDto) {
+            return new Faculty(facultyDto.getName(), facultyDto.getAddress(), facultyDto.getContactEmail());
+        }
+    }
+
 }

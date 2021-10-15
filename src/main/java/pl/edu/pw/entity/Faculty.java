@@ -19,6 +19,16 @@ public class Faculty {
     @Column(length = 64, nullable = false)
     private String contactEmail;
 
+    public Faculty(String name, String address, String contactEmail) {
+        this.name = name;
+        this.address = address;
+        this.contactEmail = contactEmail;
+    }
+
+    public Faculty() {
+
+    }
+
     public String getName() {
         return name;
     }
