@@ -1,5 +1,6 @@
 package pl.edu.pw.service;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.dao.FacultyDao;
@@ -29,6 +30,28 @@ public class FacultyServiceImpl implements FacultyService {
     public Faculty add(FacultyDto facultyDto) {
         return facultyDao.save(FacultyMapper.map(facultyDto));
     }
+
+
+
+    @Override
+    public void deleteByName(String name) throws NotFoundException {
+        if (facultyDao.findByName(name)==null) {
+            throw new NotFoundException("Faculty " +name+" does not exist");
+        }
+      facultyDao.deleteByName(name);
+
+    }
+
+    @Override
+    public String findByName(String name) throws NotFoundException {
+        String f = facultyDao.findByName(name);
+        if (f==null) {
+            throw new NotFoundException("Faculty " +name+" does not exist");
+        }
+        return f;
+    }
+
+
 
     private static class FacultyMapper {
         private static Faculty map(FacultyDto facultyDto) {

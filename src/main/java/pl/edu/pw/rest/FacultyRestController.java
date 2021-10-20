@@ -1,6 +1,9 @@
 package pl.edu.pw.rest;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
@@ -27,5 +30,25 @@ public class FacultyRestController {
         }
         return service.add(facultyDto);
     }
+
+    @DeleteMapping("/delete/{name}")
+
+    public String delete(@PathVariable ("name") String name) throws NotFoundException {
+        if (name==null){
+            throw new IllegalArgumentException("Faculty's name argument is required");
+        }
+        service.deleteByName(name);
+        return "deleted- " + name;
+    }
+
+    @GetMapping("/find/{name}")
+    public FacultyDto find(@PathVariable("name") String name) throws NotFoundException {
+        if (name==null){
+            throw new IllegalArgumentException("Faculty's name argument is required");
+        }
+        String[] data = service.findByName(name).split(",");
+        return new FacultyDto(data[0],data[1],data[2]);
+    }
+
 
 }
