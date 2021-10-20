@@ -15,7 +15,7 @@ public class FacultyRestController {
     @Autowired
     private FacultyService service;
 
-    @GetMapping(value = {"", "/"})
+    @GetMapping("")
     public List<FacultyDto> getFaculties() {
         return service.getAll();
     }
@@ -23,8 +23,9 @@ public class FacultyRestController {
     @PostMapping("/add")
     public Faculty addFaculty(@RequestBody FacultyDto facultyDto) {
         if (facultyDto == null) {
-            throw new IllegalArgumentException("Faculty argument is required");
+            throw new IllegalArgumentException("Faculty argument is required"); // wydaje mi się, że to jest handlowane gdzie indziej
         }
         return service.add(facultyDto);
     }
+
 }

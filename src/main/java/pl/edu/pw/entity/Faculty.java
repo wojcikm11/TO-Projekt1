@@ -10,7 +10,7 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(length = 256, nullable = false)
+    @Column(length = 256, nullable = false, unique = true)
     private String name;
 
     @Column(length = 128, nullable = false)

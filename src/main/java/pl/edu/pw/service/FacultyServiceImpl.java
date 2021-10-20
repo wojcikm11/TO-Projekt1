@@ -23,18 +23,6 @@ public class FacultyServiceImpl implements FacultyService {
                         f.getAddress(),
                         f.getContactEmail()
                 )).collect(Collectors.toList());
-// Above code does the same thing as this one:
-//
-//        List<Faculty> facultyEntities = facultyDao.findAll();
-//        List<FacultyDto> facultyDtos = new ArrayList<>();
-//        for (Faculty faculty : facultyEntities) {
-//            FacultyDto dto = new FacultyDto(
-//                    faculty.getName(),
-//                    faculty.getAddress(),
-//                    faculty.getContactEmail()
-//            );
-//        }
-//        return facultyDtos;
     }
 
     @Override

@@ -13,6 +13,8 @@ public class FacultyDto {
     @Size(min = 10, max = 64)
     private String contactEmail;
 
+    public FacultyDto() { }
+
     public FacultyDto(String name, String address, String contactEmail) {
         this.name = name;
         this.address = address;
