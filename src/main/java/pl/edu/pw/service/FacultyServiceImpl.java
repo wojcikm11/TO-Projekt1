@@ -19,11 +19,8 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public List<FacultyDto> getAll() {
         return facultyDao.findAll().stream()
-                .map(f -> new FacultyDto(
-                        f.getName(),
-                        f.getAddress(),
-                        f.getContactEmail()
-                )).collect(Collectors.toList());
+                .map(FacultyMapper::map)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -31,40 +28,43 @@ public class FacultyServiceImpl implements FacultyService {
         return facultyDao.save(FacultyMapper.map(facultyDto));
     }
 
-
-
     @Override
     public void deleteByName(String name) throws NotFoundException {
-        if (facultyDao.findByName(name)==null) {
-            throw new NotFoundException("Faculty " +name+" does not exist");
+        if (facultyDao.findByName(name) == null) {
+            throw new NotFoundException("Faculty " + name + " does not exist");
         }
-      facultyDao.deleteByName(name);
-
+        facultyDao.deleteByName(name);
     }
 
     @Override
-    public String findByName(String name) throws NotFoundException {
-        String f = facultyDao.findByName(name);
-        if (f==null) {
-            throw new NotFoundException("Faculty " +name+" does not exist");
+    public FacultyDto findByName(String name) throws NotFoundException {
+        Faculty faculty = facultyDao.findByName(name);
+        if (faculty == null) {
+            throw new NotFoundException("Faculty " + name + " does not exist");
         }
-        return f;
+        return FacultyMapper.map(faculty);
     }
 
     @Override
-    public void updateByName(FacultyDto facultyDto) throws NotFoundException {
-        String name = facultyDto.getName();
-        String f = facultyDao.findByName(name);
-        if (f==null) {
-            throw new NotFoundException("Faculty " +name+" does not exist");
+    public void updateByName(String name, FacultyDto facultyDto) throws NotFoundException {
+        Faculty faculty = facultyDao.findByName(name);
+        if (faculty == null) {
+            throw new NotFoundException("Faculty " + name + " does not exist");
         }
-        facultyDao.updateByName(name, facultyDto.getAddress(), facultyDto.getContactEmail());
+        faculty.setName(facultyDto.getName());
+        faculty.setAddress(facultyDto.getAddress());
+        faculty.setContactEmail(facultyDto.getContactEmail());
+        facultyDao.save(faculty);
     }
 
 
     private static class FacultyMapper {
         private static Faculty map(FacultyDto facultyDto) {
             return new Faculty(facultyDto.getName(), facultyDto.getAddress(), facultyDto.getContactEmail());
+        }
+
+        private static FacultyDto map(Faculty faculty) {
+            return new FacultyDto(faculty.getName(), faculty.getAddress(), faculty.getContactEmail());
         }
     }
 

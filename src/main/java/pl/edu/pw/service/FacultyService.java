@@ -11,8 +11,11 @@ public interface FacultyService {
     List<FacultyDto> getAll();
 
     Faculty add(FacultyDto facultyDto);
-    void deleteByName(String  name) throws NotFoundException;
-    String findByName(String name) throws NotFoundException;
-    void updateByName(FacultyDto facultyDto) throws NotFoundException;
+
+    void deleteByName(String name) throws NotFoundException;
+
+    FacultyDto findByName(String name) throws NotFoundException;
+
+    void updateByName(String name, FacultyDto facultyDto) throws NotFoundException;
 
 }

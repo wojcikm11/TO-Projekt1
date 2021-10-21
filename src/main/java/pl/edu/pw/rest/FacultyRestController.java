@@ -2,14 +2,12 @@ package pl.edu.pw.rest;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
 import pl.edu.pw.service.FacultyService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,36 +23,25 @@ public class FacultyRestController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public Faculty addFaculty(@RequestBody FacultyDto facultyDto) {
-        if (facultyDto == null) {
-            throw new IllegalArgumentException("Faculty argument is required"); // wydaje mi się, że to jest handlowane gdzie indziej
-        }
         return service.add(facultyDto);
     }
 
     @DeleteMapping("/delete/{name}")
-    public String delete(@PathVariable ("name") String name) throws NotFoundException {
-        if (name==null){
-            throw new IllegalArgumentException("Faculty's name argument is required");
-        }
+    public void delete(@PathVariable String name) throws NotFoundException {
         service.deleteByName(name);
-        return "deleted- " + name;
     }
 
     @GetMapping("/find/{name}")
-    public FacultyDto find(@PathVariable("name") String name) throws NotFoundException {
-        if (name==null){
-            throw new IllegalArgumentException("Faculty's name argument is required");
-        }
-        String[] data = service.findByName(name).split(",");
-        return new FacultyDto(data[0],data[1],data[2]);
+    public FacultyDto find(@PathVariable String name) throws NotFoundException {
+        return service.findByName(name);
     }
 
     @PutMapping("/update/{name}")
-    public String update(@PathVariable(value = "name") String name, @RequestBody String address, @RequestBody String contactEmail) throws NotFoundException{
-        service.updateByName(new FacultyDto(name, address, contactEmail));
-        return "Updated" + name;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable String name, @RequestBody FacultyDto facultyDto) throws NotFoundException {
+        service.updateByName(name, facultyDto);
     }
-
 
 }
