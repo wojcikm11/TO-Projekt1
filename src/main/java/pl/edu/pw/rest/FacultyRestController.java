@@ -9,6 +9,7 @@ import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
 import pl.edu.pw.service.FacultyService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,7 +33,6 @@ public class FacultyRestController {
     }
 
     @DeleteMapping("/delete/{name}")
-
     public String delete(@PathVariable ("name") String name) throws NotFoundException {
         if (name==null){
             throw new IllegalArgumentException("Faculty's name argument is required");
@@ -48,6 +48,12 @@ public class FacultyRestController {
         }
         String[] data = service.findByName(name).split(",");
         return new FacultyDto(data[0],data[1],data[2]);
+    }
+
+    @PutMapping("/update/{name}")
+    public String update(@PathVariable(value = "name") String name, @RequestBody String address, @RequestBody String contactEmail) throws NotFoundException{
+        service.updateByName(new FacultyDto(name, address, contactEmail));
+        return "Updated" + name;
     }
 
 

@@ -20,5 +20,7 @@ public interface FacultyDao extends JpaRepository<Faculty, Long> {
     @Query(value="select f.name, f.address, f.contactEmail from Faculty f where f.name = :name")
     String findByName(String name);
 
+    @Query("update Faculty f set f.address = :address, f.contactEmail = :contactEmail where f.name = :name")
+    void updateByName(String name, String address, String contactEmail);
 
 }

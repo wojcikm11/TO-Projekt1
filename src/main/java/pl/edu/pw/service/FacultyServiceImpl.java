@@ -51,6 +51,15 @@ public class FacultyServiceImpl implements FacultyService {
         return f;
     }
 
+    @Override
+    public void updateByName(FacultyDto facultyDto) throws NotFoundException {
+        String name = facultyDto.getName();
+        String f = facultyDao.findByName(name);
+        if (f==null) {
+            throw new NotFoundException("Faculty " +name+" does not exist");
+        }
+        facultyDao.updateByName(name, facultyDto.getAddress(), facultyDto.getContactEmail());
+    }
 
 
     private static class FacultyMapper {

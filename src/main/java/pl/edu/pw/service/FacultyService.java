@@ -13,6 +13,6 @@ public interface FacultyService {
     Faculty add(FacultyDto facultyDto);
     void deleteByName(String  name) throws NotFoundException;
     String findByName(String name) throws NotFoundException;
-
+    void updateByName(FacultyDto facultyDto) throws NotFoundException;
 
 }
