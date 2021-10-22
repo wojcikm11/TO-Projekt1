@@ -191,7 +191,7 @@ class FacultyRestControllerTest {
     }
 
     @Test
-    void delete_noNameProvided_throwsBadRequest() throws Exception {
+    void delete_noNameProvided_throwsNotFound() throws Exception {
         this.mockMvc.perform(delete("/faculties/delete/")).andExpect(status().isNotFound());
     }
 
