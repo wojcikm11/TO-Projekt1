@@ -195,5 +195,9 @@ class FacultyRestControllerTest {
         this.mockMvc.perform(delete("/faculties/delete/")).andExpect(status().isNotFound());
     }
 
-
+    @Test
+    void delete_success() throws Exception {
+        String name = "Totally Real Faculty";
+        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isOk());
+    }
 }

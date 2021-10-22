@@ -101,5 +101,8 @@ class FacultyServiceTest {
         assertThrows(NotFoundException.class,()->service.findByName(name));
     }
 
-
+    @Test
+    void delete_nullName_throwsNotFoundException() {
+        assertThrows(NotFoundException.class, () -> service.deleteByName(null));
+    }
 }

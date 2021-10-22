@@ -16,8 +16,4 @@ public interface FacultyDao extends JpaRepository<Faculty, Long> {
     void deleteByName(String name);
 
     Faculty findByName(String name);
-
-    @Query("update Faculty f set f.address = :address, f.contactEmail = :contactEmail where f.name = :name")
-    void updateByName(String name, String address, String contactEmail);
-
 }
