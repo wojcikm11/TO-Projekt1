@@ -34,7 +34,10 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteByName(String name) throws NotFoundException {
-        findByName(name);
+        Faculty faculty = facultyDao.findByName(name);
+        if (faculty == null) {
+            throw new NotFoundException("Faculty " + name + " does not exist");
+        }
         facultyDao.deleteByName(name);
     }
 

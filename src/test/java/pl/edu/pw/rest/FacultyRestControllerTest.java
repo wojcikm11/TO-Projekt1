@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -174,4 +175,25 @@ class FacultyRestControllerTest {
     void updateFaculty_invalidName_throwsBadRequest() throws Exception {
         this.mockMvc.perform(put("/faculties/update/InvalidName")).andExpect(status().isBadRequest());
     }
+
+    @Test
+    void updateFaculty_noBody_throwBadRequest() throws Exception {
+        this.mockMvc.perform(put("/faculties/update/wydzial1")).andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    void delete_invalidName_throwsNotFound() throws Exception {
+        String name= "wrongName";
+        doThrow(NotFoundException.class).when(service).deleteByName(name);
+        this.mockMvc.perform(delete("/faculties/delete/"+name)).andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void delete_noNameProvided_throwsBadRequest() throws Exception {
+        this.mockMvc.perform(delete("/faculties/delete/")).andExpect(status().isNotFound());
+    }
+
+
 }
