@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import pl.edu.pw.dao.FacultyDao;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
+import pl.edu.pw.mapper.FacultyMapper;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +26,9 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty add(FacultyDto facultyDto) {
-        return facultyDao.save(FacultyMapper.map(facultyDto));
+    public FacultyDto add(FacultyDto facultyDto) throws SQLException {
+        Faculty newFaculty = facultyDao.save(FacultyMapper.map(facultyDto));
+        return FacultyMapper.map(newFaculty);
     }
 
     @Override
@@ -55,17 +58,6 @@ public class FacultyServiceImpl implements FacultyService {
         faculty.setAddress(facultyDto.getAddress());
         faculty.setContactEmail(facultyDto.getContactEmail());
         facultyDao.save(faculty);
-    }
-
-
-    private static class FacultyMapper {
-        private static Faculty map(FacultyDto facultyDto) {
-            return new Faculty(facultyDto.getName(), facultyDto.getAddress(), facultyDto.getContactEmail());
-        }
-
-        private static FacultyDto map(Faculty faculty) {
-            return new FacultyDto(faculty.getName(), faculty.getAddress(), faculty.getContactEmail());
-        }
     }
 
 }

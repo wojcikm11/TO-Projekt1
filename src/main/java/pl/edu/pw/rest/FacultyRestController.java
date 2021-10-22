@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.dto.FacultyDto;
-import pl.edu.pw.entity.Faculty;
 import pl.edu.pw.service.FacultyService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -24,7 +24,7 @@ public class FacultyRestController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Faculty addFaculty(@RequestBody FacultyDto facultyDto) {
+    public FacultyDto addFaculty(@RequestBody FacultyDto facultyDto) throws SQLException {
         return service.add(facultyDto);
     }
 
