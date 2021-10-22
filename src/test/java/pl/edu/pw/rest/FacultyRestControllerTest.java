@@ -19,8 +19,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -155,4 +154,24 @@ class FacultyRestControllerTest {
         Mockito.verify(service, times(1)).add(requestDto);
     }
 
+    @Test
+    void updateFaculty_success() throws Exception {
+        String facultyName = "Faculty";
+        FacultyDto facultyDto = new FacultyDto(facultyName, "Faculty Addres", "contact@gmail.com");
+        String requestBody = "{" +
+                "\"name\":\"" + facultyDto.getName() + "\"," +
+                "\"address\":\"" + facultyDto.getAddress() + "\"," +
+                "\"contactEmail\":\"" + facultyDto.getContactEmail() + "\"" +
+                "}";
+
+        this.mockMvc.perform(put("/faculties/update/" + facultyName)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)).andExpect(status().isNoContent());
+        Mockito.verify(service, times(1)).updateByName(facultyName, facultyDto);
+    }
+
+    @Test
+    void updateFaculty_invalidName_throwsBadRequest() throws Exception {
+        this.mockMvc.perform(put("/faculties/update/InvalidName")).andExpect(status().isBadRequest());
+    }
 }
