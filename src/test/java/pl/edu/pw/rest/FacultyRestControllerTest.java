@@ -1,5 +1,6 @@
 package pl.edu.pw.rest;
 
+import javassist.NotFoundException;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,7 +45,55 @@ class FacultyRestControllerTest {
         Mockito.verify(service, times(1)).getAll();
     }
 
-    // TODO: more tests for getFaculties()
+    @Test
+    void getFaculties_oneElementTable_returnOneElementList() throws Exception {
+        List<FacultyDto> oneElementList = new ArrayList<>();
+        FacultyDto dto = new FacultyDto("Transport", "Konopnickiej 7", "transport@pw.edu.pl");
+        oneElementList.add(dto);
+
+        Mockito.when(service.getAll()).thenReturn(oneElementList);
+
+        this.mockMvc.perform(get("/faculties"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("[" +
+                                "{" +
+                                    "\"name\":\"" + dto.getName() + "\"," +
+                                    "\"address\":\"" + dto.getAddress() + "\"," +
+                                    "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
+                                "}" +
+                            "]"
+                        )
+                ));
+        Mockito.verify(service, times(1)).getAll();
+    }
+
+    @Test
+    void findFaculty_success() throws Exception {
+        String facultyName = "Electrical";
+        FacultyDto dto = new FacultyDto(facultyName, "Brzozowa 13", "electrical@pw.edu.pl");
+        Mockito.when(service.findByName(facultyName)).thenReturn(dto);
+
+        this.mockMvc.perform(get("/faculties/find/" + facultyName))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("{" +
+                                "\"name\":\"" + dto.getName() + "\"," +
+                                "\"address\":\"" + dto.getAddress() + "\"," +
+                                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
+                                "}"
+                            )
+                ));
+        Mockito.verify(service, times(1)).findByName(facultyName);
+    }
+
+    @Test
+    void findFaculty_invalidName_throwNotFound() throws Exception {
+        String invalidFacultyName = "Mechanicel";
+        Mockito.when(service.findByName(invalidFacultyName)).thenThrow(new NotFoundException(null));
+
+        this.mockMvc.perform(get("/faculties/find/" + invalidFacultyName))
+                .andExpect(status().isNotFound());
+        Mockito.verify(service, times(1)).findByName(invalidFacultyName);
+    }
 
     @Test
     void addFaculty_noBody_throwBadRequest() throws Exception {
