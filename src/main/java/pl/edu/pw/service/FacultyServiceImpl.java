@@ -8,6 +8,7 @@ import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
 import pl.edu.pw.mapper.FacultyMapper;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public FacultyDto add(FacultyDto facultyDto) throws SQLException {
+    public FacultyDto add(@Valid FacultyDto facultyDto) throws SQLException {
         Faculty newFaculty = facultyDao.save(FacultyMapper.map(facultyDto));
         return FacultyMapper.map(newFaculty);
     }
@@ -49,7 +50,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public void updateByName(String name, FacultyDto facultyDto) throws NotFoundException {
+    public void updateByName(String name, @Valid FacultyDto facultyDto) throws NotFoundException {
         Faculty faculty = facultyDao.findByName(name);
         if (faculty == null) {
             throw new NotFoundException("Faculty " + name + " does not exist");
