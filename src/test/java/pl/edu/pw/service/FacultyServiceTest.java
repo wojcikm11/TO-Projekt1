@@ -107,6 +107,18 @@ class FacultyServiceTest {
     }
 
     @Test
+    void update_emptyDataBase_throwsNotFoundException() {
+        String name = "Wydział Matematyki i Nauk Informacyjnych";
+        FacultyDto updated = new FacultyDto(
+                "Elektrotechniki i Technik Informacyjnych",
+                "Starzyńskiego 10",
+                "example@gmail.com"
+        );
+        assertThrows(NotFoundException.class, () -> service.updateByName(name, updated));
+    }
+
+    @Test
+    @Sql({"/supply-many.sql"})
     void update_wrongName_throwsNotFoundException() {
         String name = "wrong name";
         FacultyDto updated = new FacultyDto(
@@ -131,5 +143,44 @@ class FacultyServiceTest {
         FacultyDto actual = service.findByName(name);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql({"/supply-many.sql"})
+    void update_nullName_throwsDataIntegrityViolationException() {
+        String name = "Wydział Elektryczny";
+        FacultyDto updatedFaculty = new FacultyDto(
+                null,
+                "Chełmońskiego 1",
+                "super-wydzial@pw.edu.pl"
+        );
+
+        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
+    }
+
+    @Test
+    @Sql({"/supply-many.sql"})
+    void update_nullAddress_throwsDataIntegrityViolationException() {
+        String name = "Wydział Matematyki i Nauk Informacyjnych";
+        FacultyDto updatedFaculty = new FacultyDto(
+                "Wydział Inżynierii Lądowej",
+                null,
+                "dziekanat@pw.edu.pl"
+        );
+
+        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
+    }
+
+    @Test
+    @Sql({"/supply-many.sql"})
+    void update_nullContactEmail_throwsDataIntegrityViolationException() {
+        String name = "Wydział Inżynierii Lądowej";
+        FacultyDto updatedFaculty = new FacultyDto(
+                "Wydział Chemiczny",
+                null,
+                "chemiczny@pw.edu.pl"
+        );
+
+        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
     }
 }
