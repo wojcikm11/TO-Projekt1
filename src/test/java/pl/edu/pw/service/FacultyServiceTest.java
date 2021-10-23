@@ -55,50 +55,50 @@ class FacultyServiceTest {
 
 
     @Test
-    void add_emptyObject_throwsNullPointerException(){
+    void add_emptyObject_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> service.add(null));
     }
 
     @Test
 //    database raises this exception
-    void add_nullName_throwsDataIntegrityViolationException(){
-        FacultyDto faculty = new FacultyDto(null,"address","email@gmail.com");
+    void add_nullName_throwsDataIntegrityViolationException() {
+        FacultyDto faculty = new FacultyDto(null, "address", "email@gmail.com");
         assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
     }
 
     @Test
-    void add_nullAddress_throwsDataIntegrityViolationException(){
-        FacultyDto faculty = new FacultyDto("faculty",null,"email@gmail.com");
+    void add_nullAddress_throwsDataIntegrityViolationException() {
+        FacultyDto faculty = new FacultyDto("faculty", null, "email@gmail.com");
         assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
     }
 
     @Test
-    void add_nullEmail_throwsDataIntegrityViolationException(){
-        FacultyDto faculty = new FacultyDto("faculty","address",null);
+    void add_nullEmail_throwsDataIntegrityViolationException() {
+        FacultyDto faculty = new FacultyDto("faculty", "address", null);
         assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
     }
 
     @Test
     void add_success() throws SQLException, NotFoundException {
-        FacultyDto faculty = new FacultyDto("faculty","address","email@gmail.com");
+        FacultyDto faculty = new FacultyDto("faculty", "address", "email@gmail.com");
         service.add(faculty);
         FacultyDto returned = service.findByName(faculty.getName());
-        assertEquals(faculty,returned);
+        assertEquals(faculty, returned);
     }
 
     @Test
     @Sql({"/supply-many.sql"})
-    void delete_incorrectName_throwsNotFoundException(){
-        String name ="wrongName";
+    void delete_incorrectName_throwsNotFoundException() {
+        String name = "wrongName";
         assertThrows(NotFoundException.class, () -> service.deleteByName(name));
     }
 
     @Test
     @Sql({"/supply-many.sql"})
     void delete_success() throws NotFoundException {
-        String name ="Wydział Elektryczny";
+        String name = "Wydział Elektryczny";
         service.deleteByName(name);
-        assertThrows(NotFoundException.class,()->service.findByName(name));
+        assertThrows(NotFoundException.class, () -> service.findByName(name));
     }
 
     @Test
