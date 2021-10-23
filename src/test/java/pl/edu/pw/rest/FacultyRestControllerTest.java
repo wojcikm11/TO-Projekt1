@@ -1,6 +1,7 @@
 package pl.edu.pw.rest;
 
 import javassist.NotFoundException;
+import javassist.tools.web.BadHttpRequest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.mapper.FacultyMapper;
 import pl.edu.pw.service.FacultyService;
@@ -176,30 +178,38 @@ class FacultyRestControllerTest {
         this.mockMvc.perform(put("/faculties/update/InvalidName")).andExpect(status().isBadRequest());
     }
 
+//    todo czy o to hodzi zeby requestbody=""?
     @Test
     void updateFaculty_noBody_throwBadRequest() throws Exception {
-        this.mockMvc.perform(put("/faculties/update/wydzial1")).andExpect(status().isBadRequest());
+        String facultyName = "Faculty";
+        String requestBody = "";
+        Mockito.doThrow(NotFoundException.class).when(service).updateByName(facultyName,null);
+        this.mockMvc.perform(put("/faculties/update/wydzial1").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
     }
 
 
     @Test
     void delete_invalidName_throwsNotFound() throws Exception {
         String name= "wrongName";
-        doThrow(NotFoundException.class).when(service).deleteByName(name);
+        Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
         this.mockMvc.perform(delete("/faculties/delete/"+name)).andExpect(status().isNotFound());
+        Mockito.verify(service,times(1)).deleteByName(name);
 
     }
-
+//todo nie dziala
     @Test
     void delete_noNameProvided_throwsNotFound() throws Exception {
+        String name= "";
+        Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
         this.mockMvc.perform(delete("/faculties/delete/")).andExpect(status().isNotFound());
+        Mockito.verify(service,times(1)).deleteByName(name);
     }
 
     @Test
     void delete_success() throws Exception {
         String name = "Totally Real Faculty";
-
+        Mockito.doNothing().when(service).deleteByName(name);
         this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isOk());
-        //Mockito.verify(service,times(1)).deleteByName(name);
+        Mockito.verify(service,times(1)).deleteByName(name);
     }
 }
