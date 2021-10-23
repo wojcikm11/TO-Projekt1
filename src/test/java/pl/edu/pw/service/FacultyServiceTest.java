@@ -105,4 +105,31 @@ class FacultyServiceTest {
     void delete_nullName_throwsNotFoundException() {
         assertThrows(NotFoundException.class, () -> service.deleteByName(null));
     }
+
+    @Test
+    void update_wrongName_throwsNotFoundException() {
+        String name = "wrong name";
+        FacultyDto updated = new FacultyDto(
+                "doesnt matter",
+                "Chmielna 5",
+                "example@example.com"
+        );
+        assertThrows(NotFoundException.class, () -> service.updateByName(name, updated));
+    }
+
+    @Test
+    @Sql({"/supply-many.sql"})
+    void update_success() throws NotFoundException {
+        String name = "Wydział Inżynierii Lądowej";
+        FacultyDto expected = new FacultyDto(
+                "Wydział Inżynierii Lądowej",
+                "inna ulica",
+                "dziekanat@pw.edu.pl"
+        );
+
+        service.updateByName(name, expected);
+        FacultyDto actual = service.findByName(name);
+
+        assertEquals(expected, actual);
+    }
 }

@@ -17,5 +17,4 @@ public interface FacultyService {
     FacultyDto findByName(String name) throws NotFoundException;
 
     void updateByName(String name, FacultyDto facultyDto) throws NotFoundException;
-
 }
