@@ -59,11 +59,11 @@ class FacultyRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("[" +
                                 "{" +
-                                    "\"name\":\"" + dto.getName() + "\"," +
-                                    "\"address\":\"" + dto.getAddress() + "\"," +
-                                    "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
+                                "\"name\":\"" + dto.getName() + "\"," +
+                                "\"address\":\"" + dto.getAddress() + "\"," +
+                                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
                                 "}" +
-                            "]"
+                                "]"
                         )
                 ));
         Mockito.verify(service, times(1)).getAll();
@@ -82,7 +82,7 @@ class FacultyRestControllerTest {
                                 "\"address\":\"" + dto.getAddress() + "\"," +
                                 "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
                                 "}"
-                            )
+                        )
                 ));
         Mockito.verify(service, times(1)).findByName(facultyName);
     }
@@ -114,8 +114,8 @@ class FacultyRestControllerTest {
         Mockito.when(service.add(dto)).thenThrow(new PropertyValueException(null, "Faculty", "contactEmail"));
 
         this.mockMvc.perform(post("/faculties/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isBadRequest());
         Mockito.verify(service, times(1)).add(dto);
     }
@@ -132,8 +132,8 @@ class FacultyRestControllerTest {
         Mockito.when(service.add(dto)).thenThrow(new SQLException());
 
         this.mockMvc.perform(post("/faculties/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isBadRequest());
         Mockito.verify(service, times(1)).add(dto);
     }
@@ -151,8 +151,8 @@ class FacultyRestControllerTest {
         Mockito.when(service.add(requestDto)).thenReturn(responseDto);
 
         this.mockMvc.perform(post("/faculties/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isCreated());
         Mockito.verify(service, times(1)).add(requestDto);
     }
@@ -174,35 +174,46 @@ class FacultyRestControllerTest {
     }
 
     @Test
-    void updateFaculty_invalidName_throwsBadRequest() throws Exception {
-        this.mockMvc.perform(put("/faculties/update/InvalidName")).andExpect(status().isBadRequest());
+    void updateFaculty_invalidName_throwsNotFound() throws Exception {
+        String invalidFacultyName = "NotFaculty";
+        FacultyDto facultyDto = new FacultyDto("Faculty", "Faculty Addres", "contact@gmail.com");
+        String requestBody = "{" +
+                "\"name\":\"" + facultyDto.getName() + "\"," +
+                "\"address\":\"" + facultyDto.getAddress() + "\"," +
+                "\"contactEmail\":\"" + facultyDto.getContactEmail() + "\"" +
+                "}";
+        Mockito.doThrow(NotFoundException.class).when(service).updateByName(invalidFacultyName, facultyDto);
+        this.mockMvc.perform(put("/faculties/update/" + invalidFacultyName)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)).andExpect(status().isNotFound());
+        Mockito.verify(service, times(1)).updateByName(invalidFacultyName, facultyDto);
     }
 
-//    todo czy o to hodzi zeby requestbody=""?
+    //    todo czy o to hodzi zeby requestbody=""?
     @Test
     void updateFaculty_noBody_throwBadRequest() throws Exception {
         String facultyName = "Faculty";
         String requestBody = "";
-        Mockito.doThrow(NotFoundException.class).when(service).updateByName(facultyName,null);
+        Mockito.doThrow(NotFoundException.class).when(service).updateByName(facultyName, null);
         this.mockMvc.perform(put("/faculties/update/wydzial1").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
     }
 
 
     @Test
     void delete_invalidName_throwsNotFound() throws Exception {
-        String name= "wrongName";
+        String name = "wrongName";
         Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
-        this.mockMvc.perform(delete("/faculties/delete/"+name)).andExpect(status().isNotFound());
-        Mockito.verify(service,times(1)).deleteByName(name);
+        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isNotFound());
+        Mockito.verify(service, times(1)).deleteByName(name);
 
     }
 
     @Test
     void delete_noNameProvided_throwsNotFound() throws Exception {
-        String name= "";
+        String name = "";
         Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
         this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isNotFound());
-        Mockito.verify(service,times(0)).deleteByName(name);
+        Mockito.verify(service, times(0)).deleteByName(name);
         // kontroler od razu rzuca wyjątek, w związku z czym metoda serwisu w ogóle się nie wywołuje
     }
 
@@ -211,6 +222,6 @@ class FacultyRestControllerTest {
         String name = "Totally Real Faculty";
         Mockito.doNothing().when(service).deleteByName(name);
         this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isOk());
-        Mockito.verify(service,times(1)).deleteByName(name);
+        Mockito.verify(service, times(1)).deleteByName(name);
     }
 }
