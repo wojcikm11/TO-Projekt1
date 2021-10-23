@@ -196,13 +196,14 @@ class FacultyRestControllerTest {
         Mockito.verify(service,times(1)).deleteByName(name);
 
     }
-//todo nie dziala
+
     @Test
     void delete_noNameProvided_throwsNotFound() throws Exception {
         String name= "";
         Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
-        this.mockMvc.perform(delete("/faculties/delete/")).andExpect(status().isNotFound());
-        Mockito.verify(service,times(1)).deleteByName(name);
+        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isNotFound());
+        Mockito.verify(service,times(0)).deleteByName(name);
+        // kontroler od razu rzuca wyjątek, w związku z czym metoda serwisu w ogóle się nie wywołuje
     }
 
     @Test
