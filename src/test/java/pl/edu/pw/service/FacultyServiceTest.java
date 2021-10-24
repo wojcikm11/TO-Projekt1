@@ -56,55 +56,67 @@ class FacultyServiceTest {
 
     @Test
     void add_emptyObject_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> service.add(null));
+        assertThrows(NullPointerException.class,
+                () -> service.add(null));
     }
 
     @Test
-//    database raises this exception
     void add_nullName_throwsDataIntegrityViolationException() {
         FacultyDto faculty = new FacultyDto(null, "address", "email@gmail.com");
-        assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.add(faculty));
     }
 
     @Test
     void add_nullAddress_throwsDataIntegrityViolationException() {
         FacultyDto faculty = new FacultyDto("faculty", null, "email@gmail.com");
-        assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.add(faculty));
     }
 
     @Test
     void add_nullEmail_throwsDataIntegrityViolationException() {
         FacultyDto faculty = new FacultyDto("faculty", "address", null);
-        assertThrows(DataIntegrityViolationException.class, () -> service.add(faculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.add(faculty));
     }
 
     @Test
     void add_success() throws SQLException, NotFoundException {
         FacultyDto faculty = new FacultyDto("faculty", "address", "email@gmail.com");
+
         service.add(faculty);
         FacultyDto returned = service.findByName(faculty.getName());
+
         assertEquals(faculty, returned);
     }
+
 
     @Test
     @Sql({"/supply-many.sql"})
     void delete_incorrectName_throwsNotFoundException() {
         String name = "wrongName";
-        assertThrows(NotFoundException.class, () -> service.deleteByName(name));
+        assertThrows(NotFoundException.class,
+                () -> service.deleteByName(name));
     }
 
     @Test
     @Sql({"/supply-many.sql"})
     void delete_success() throws NotFoundException {
         String name = "Wydział Elektryczny";
+
         service.deleteByName(name);
-        assertThrows(NotFoundException.class, () -> service.findByName(name));
+
+        assertThrows(NotFoundException.class,
+                () -> service.findByName(name));
     }
 
     @Test
     void delete_nullName_throwsNotFoundException() {
-        assertThrows(NotFoundException.class, () -> service.deleteByName(null));
+        assertThrows(NotFoundException.class,
+                () -> service.deleteByName(null));
     }
+
 
     @Test
     void update_emptyDataBase_throwsNotFoundException() {
@@ -114,7 +126,9 @@ class FacultyServiceTest {
                 "Starzyńskiego 10",
                 "example@gmail.com"
         );
-        assertThrows(NotFoundException.class, () -> service.updateByName(name, updated));
+
+        assertThrows(NotFoundException.class,
+                () -> service.updateByName(name, updated));
     }
 
     @Test
@@ -126,7 +140,9 @@ class FacultyServiceTest {
                 "Chmielna 5",
                 "example@example.com"
         );
-        assertThrows(NotFoundException.class, () -> service.updateByName(name, updated));
+
+        assertThrows(NotFoundException.class,
+                () -> service.updateByName(name, updated));
     }
 
     @Test
@@ -155,7 +171,8 @@ class FacultyServiceTest {
                 "super-wydzial@pw.edu.pl"
         );
 
-        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.updateByName(name, updatedFaculty));
     }
 
     @Test
@@ -168,7 +185,8 @@ class FacultyServiceTest {
                 "dziekanat@pw.edu.pl"
         );
 
-        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.updateByName(name, updatedFaculty));
     }
 
     @Test
@@ -181,6 +199,8 @@ class FacultyServiceTest {
                 "chemiczny@pw.edu.pl"
         );
 
-        assertThrows(DataIntegrityViolationException.class, () -> service.updateByName(name, updatedFaculty));
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.updateByName(name, updatedFaculty));
     }
+
 }

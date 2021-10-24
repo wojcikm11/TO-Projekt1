@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -31,6 +32,14 @@ class FacultyRestControllerTest {
 
     @MockBean
     FacultyService service;
+
+    private String buildJsonBody(FacultyDto dto) {
+        return "{" +
+                "\"name\":\"" + dto.getName() + "\"," +
+                "\"address\":\"" + dto.getAddress() + "\"," +
+                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
+                "}";
+    }
 
     @Test
     void getFaculties_emptyTable_returnEmptyList() throws Exception {
@@ -54,45 +63,35 @@ class FacultyRestControllerTest {
 
         this.mockMvc.perform(get("/faculties"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("[" +
-                                "{" +
-                                "\"name\":\"" + dto.getName() + "\"," +
-                                "\"address\":\"" + dto.getAddress() + "\"," +
-                                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
-                                "}" +
-                                "]"
-                        )
-                ));
+                .andExpect(content().string(containsString("[" + buildJsonBody(dto) + "]")));
         Mockito.verify(service, times(1)).getAll();
     }
+
 
     @Test
     void findFaculty_success() throws Exception {
         String facultyName = "Electrical";
         FacultyDto dto = new FacultyDto(facultyName, "Brzozowa 13", "electrical@pw.edu.pl");
+
         Mockito.when(service.findByName(facultyName)).thenReturn(dto);
 
         this.mockMvc.perform(get("/faculties/find/" + facultyName))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("{" +
-                                "\"name\":\"" + dto.getName() + "\"," +
-                                "\"address\":\"" + dto.getAddress() + "\"," +
-                                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
-                                "}"
-                        )
-                ));
+                .andExpect(content().string(containsString(buildJsonBody(dto))));
         Mockito.verify(service, times(1)).findByName(facultyName);
     }
 
     @Test
     void findFaculty_invalidName_throwNotFound() throws Exception {
         String invalidFacultyName = "Mechanicel";
+
         Mockito.when(service.findByName(invalidFacultyName)).thenThrow(new NotFoundException(null));
 
         this.mockMvc.perform(get("/faculties/find/" + invalidFacultyName))
                 .andExpect(status().isNotFound());
         Mockito.verify(service, times(1)).findByName(invalidFacultyName);
     }
+
 
     @Test
     void addFaculty_noBody_throwBadRequest() throws Exception {
@@ -120,11 +119,7 @@ class FacultyRestControllerTest {
     @Test
     void addFaculty_nonUniqueName_throwBadRequest() throws Exception {
         FacultyDto dto = new FacultyDto("Totally Real Faculty", "Totally real street 1337", "trf@realemails.com");
-        String requestBody = "{" +
-                "\"name\":\"" + dto.getName() + "\"," +
-                "\"address\":\"" + dto.getAddress() + "\"," +
-                "\"contactEmail\":\"" + dto.getContactEmail() + "\"" +
-                "}";
+        String requestBody = buildJsonBody(dto);
 
         Mockito.when(service.add(dto)).thenThrow(new SQLException());
 
@@ -139,34 +134,30 @@ class FacultyRestControllerTest {
     void addFaculty_success() throws Exception {
         FacultyDto requestDto = new FacultyDto("Totally Real Faculty", "Totally real street 1337", "trf@realemails.com");
         FacultyDto responseDto = FacultyMapper.map(FacultyMapper.map(requestDto));
-        String requestBody = "{" +
-                "\"name\":\"" + requestDto.getName() + "\"," +
-                "\"address\":\"" + requestDto.getAddress() + "\"," +
-                "\"contactEmail\":\"" + requestDto.getContactEmail() + "\"" +
-                "}";
+        String requestBody = buildJsonBody(requestDto);
 
         Mockito.when(service.add(requestDto)).thenReturn(responseDto);
 
         this.mockMvc.perform(post("/faculties/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()); // TODO: add response content check
         Mockito.verify(service, times(1)).add(requestDto);
     }
+
 
     @Test
     void updateFaculty_success() throws Exception {
         String facultyName = "Faculty";
         FacultyDto facultyDto = new FacultyDto(facultyName, "Faculty Addres", "contact@gmail.com");
-        String requestBody = "{" +
-                "\"name\":\"" + facultyDto.getName() + "\"," +
-                "\"address\":\"" + facultyDto.getAddress() + "\"," +
-                "\"contactEmail\":\"" + facultyDto.getContactEmail() + "\"" +
-                "}";
+        String requestBody = buildJsonBody(facultyDto);
+
+        doNothing().when(service).updateByName(facultyName, facultyDto);
 
         this.mockMvc.perform(put("/faculties/update/" + facultyName)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)).andExpect(status().isNoContent());
+                .content(requestBody))
+                .andExpect(status().isNoContent());
         Mockito.verify(service, times(1)).updateByName(facultyName, facultyDto);
     }
 
@@ -174,45 +165,54 @@ class FacultyRestControllerTest {
     void updateFaculty_invalidName_throwsNotFound() throws Exception {
         String invalidFacultyName = "NotFaculty";
         FacultyDto facultyDto = new FacultyDto("Faculty", "Faculty Addres", "contact@gmail.com");
-        String requestBody = "{" +
-                "\"name\":\"" + facultyDto.getName() + "\"," +
-                "\"address\":\"" + facultyDto.getAddress() + "\"," +
-                "\"contactEmail\":\"" + facultyDto.getContactEmail() + "\"" +
-                "}";
+        String requestBody = buildJsonBody(facultyDto);
+
         Mockito.doThrow(NotFoundException.class).when(service).updateByName(invalidFacultyName, facultyDto);
+
         this.mockMvc.perform(put("/faculties/update/" + invalidFacultyName)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)).andExpect(status().isNotFound());
+                .content(requestBody))
+                .andExpect(status().isNotFound());
         Mockito.verify(service, times(1)).updateByName(invalidFacultyName, facultyDto);
     }
 
     @Test
     void updateFaculty_noBody_throwBadRequest() throws Exception {
         String facultyName = "Faculty";
+
         Mockito.doThrow(NotFoundException.class).when(service).updateByName(facultyName, null);
-        this.mockMvc.perform(put("/faculties/update/wydzial1")).andExpect(status().isBadRequest());
+
+        this.mockMvc.perform(put("/faculties/update/" + facultyName))
+                .andExpect(status().isBadRequest());
     }
 
 
     @Test
     void delete_invalidName_throwsNotFound() throws Exception {
         String name = "wrongName";
+
         Mockito.doThrow(NotFoundException.class).when(service).deleteByName(name);
-        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isNotFound());
+
+        this.mockMvc.perform(delete("/faculties/delete/" + name))
+                .andExpect(status().isNotFound());
         Mockito.verify(service, times(1)).deleteByName(name);
     }
 
     @Test
     void delete_noNameProvided_throwsNotFound() throws Exception {
         String name = "";
-        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isNotFound());
+        this.mockMvc.perform(delete("/faculties/delete/" + name))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void delete_success() throws Exception {
         String name = "Totally Real Faculty";
+
         Mockito.doNothing().when(service).deleteByName(name);
-        this.mockMvc.perform(delete("/faculties/delete/" + name)).andExpect(status().isOk());
+
+        this.mockMvc.perform(delete("/faculties/delete/" + name))
+                .andExpect(status().isOk());
         Mockito.verify(service, times(1)).deleteByName(name);
     }
 
