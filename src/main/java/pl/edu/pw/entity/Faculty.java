@@ -1,5 +1,7 @@
 package pl.edu.pw.entity;
 
+import pl.edu.pw.dto.FacultyDto;
+
 import javax.persistence.*;
 
 @Entity
@@ -52,4 +54,29 @@ public class Faculty {
         return contactEmail;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof FacultyDto)) {
+            return false;
+        }
+        FacultyDto other = (FacultyDto) obj;
+        return stringsEqual(this.name, other.getName()) &&
+                stringsEqual(this.address, other.getAddress()) &&
+                stringsEqual(this.contactEmail, other.getContactEmail());
+    }
+
+    // do poprawienia - wydzielić metodę w jakieś sensowne miejsce
+    private boolean stringsEqual(String a, String b) {
+        if (a == null) {
+            return b == null;
+        } else {
+            return a.equals(b);
+        }
+    }
 }
