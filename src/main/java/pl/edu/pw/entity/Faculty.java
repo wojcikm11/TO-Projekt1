@@ -62,10 +62,10 @@ public class Faculty {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof FacultyDto)) {
+        if (!(obj instanceof Faculty)) {
             return false;
         }
-        FacultyDto other = (FacultyDto) obj;
+        Faculty other = (Faculty) obj;
         return stringsEqual(this.name, other.getName()) &&
                 stringsEqual(this.address, other.getAddress()) &&
                 stringsEqual(this.contactEmail, other.getContactEmail());

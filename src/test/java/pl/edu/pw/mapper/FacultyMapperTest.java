@@ -6,13 +6,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FacultyMapperTest {
 
-    // equals dziwnie działa i dlatego nie przechodzi, dla equals wygenerowanego przez IntelliJ przechodzi normalnie
     @Test
     void facultyDto_to_faculty_success() {
         String name = "Wydział Architektury";
@@ -22,8 +20,13 @@ public class FacultyMapperTest {
 
         Faculty expected = new Faculty(name, address, contactEmail);
         Faculty actual = FacultyMapper.map(facultyDto);
-        assertEquals(expected, actual);
+        assertEquals(expected,actual);
     }
+
+
+
+
+
 
     @Test
     void faculty_to_facultyDto_success() {
