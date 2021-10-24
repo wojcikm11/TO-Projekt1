@@ -3,6 +3,7 @@ package pl.edu.pw.mapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.entity.Faculty;
 
@@ -25,7 +26,13 @@ public class FacultyMapperTest {
 
 
 
-
+    @Test
+    void facultyDto_to_faculty_passNull() {
+            assertThrows(NullPointerException.class,()->{
+                FacultyDto faculty =null;
+                FacultyMapper.map(faculty);
+            });
+    }
 
 
     @Test
@@ -38,5 +45,13 @@ public class FacultyMapperTest {
         FacultyDto expected = new FacultyDto(name, address, contactEmail);
         FacultyDto actual = FacultyMapper.map(faculty);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void faculty_to_facultyDto_passNull() {
+        assertThrows(NullPointerException.class,()->{
+            Faculty faculty =null;
+            FacultyMapper.map(faculty);
+        });
     }
 }
