@@ -66,17 +66,10 @@ public class Faculty {
             return false;
         }
         Faculty other = (Faculty) obj;
-        return stringsEqual(this.name, other.getName()) &&
-                stringsEqual(this.address, other.getAddress()) &&
-                stringsEqual(this.contactEmail, other.getContactEmail());
+
+        return this.name.equals(other.getName()) &&
+                this.address.equals(other.getAddress()) &&
+                this.contactEmail.equals(other.getContactEmail());
     }
 
-    // do poprawienia - wydzielić metodę w jakieś sensowne miejsce
-    private boolean stringsEqual(String a, String b) {
-        if (a == null) {
-            return b == null;
-        } else {
-            return a.equals(b);
-        }
-    }
 }
