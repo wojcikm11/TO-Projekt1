@@ -203,4 +203,16 @@ class FacultyServiceTest {
                 () -> service.updateByName(name, updatedFaculty));
     }
 
+    @Test
+    @Sql({"/supply-many.sql"})
+    void update_name_already_in_database_throwsDataIntegrityViolationException() {
+        String name = "Wydział Inżynierii Lądowej";
+        FacultyDto updatedFaculty = new FacultyDto(
+                "Wydział Elektryczny",
+                "Noakowskiego 20",
+                "ee@pw.edu.pl"
+        );
+        assertThrows(DataIntegrityViolationException.class,
+                () -> service.updateByName(name, updatedFaculty));
+    }
 }
