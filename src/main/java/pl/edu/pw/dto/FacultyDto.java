@@ -1,17 +1,19 @@
 package pl.edu.pw.dto;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class FacultyDto {
 
+    @NotNull
     @Size(min = 12, max = 256)
     private String name;
 
+    @NotNull
     @Size(min = 4, max = 128)
     private String address;
 
+    @NotNull
     @Size(min = 10, max = 64)
     private String contactEmail;
 

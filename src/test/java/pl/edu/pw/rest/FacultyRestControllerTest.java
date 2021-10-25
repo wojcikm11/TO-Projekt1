@@ -107,13 +107,10 @@ class FacultyRestControllerTest {
                 "\"address\":\"" + dto.getAddress() + "\"" +
                 "}";
 
-        Mockito.when(service.add(dto)).thenThrow(new PropertyValueException(null, "Faculty", "contactEmail"));
-
         this.mockMvc.perform(post("/faculties/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isBadRequest());
-        Mockito.verify(service, times(1)).add(dto);
     }
 
     @Test
@@ -141,15 +138,15 @@ class FacultyRestControllerTest {
         this.mockMvc.perform(post("/faculties/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-                .andExpect(status().isCreated()); // TODO: add response content check
+                .andExpect(status().isCreated());
         Mockito.verify(service, times(1)).add(requestDto);
     }
 
 
     @Test
     void updateFaculty_success() throws Exception {
-        String facultyName = "Faculty";
-        FacultyDto facultyDto = new FacultyDto(facultyName, "Faculty Addres", "contact@gmail.com");
+        String facultyName = "Real Faculty";
+        FacultyDto facultyDto = new FacultyDto(facultyName, "Faculty Address", "contact@gmail.com");
         String requestBody = buildJsonBody(facultyDto);
 
         doNothing().when(service).updateByName(facultyName, facultyDto);
@@ -164,7 +161,7 @@ class FacultyRestControllerTest {
     @Test
     void updateFaculty_invalidName_throwsNotFound() throws Exception {
         String invalidFacultyName = "NotFaculty";
-        FacultyDto facultyDto = new FacultyDto("Faculty", "Faculty Addres", "contact@gmail.com");
+        FacultyDto facultyDto = new FacultyDto("Real Faculty", "Faculty Addres", "contact@gmail.com");
         String requestBody = buildJsonBody(facultyDto);
 
         Mockito.doThrow(NotFoundException.class).when(service).updateByName(invalidFacultyName, facultyDto);

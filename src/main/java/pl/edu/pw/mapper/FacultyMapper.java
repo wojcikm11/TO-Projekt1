@@ -7,8 +7,8 @@ import javax.validation.Valid;
 
 public class FacultyMapper {
 
-    public static Faculty map( FacultyDto facultyDto) {
-        return new Faculty( facultyDto.getName(), facultyDto.getAddress(), facultyDto.getContactEmail());
+    public static Faculty map(FacultyDto facultyDto) {
+        return new Faculty(facultyDto.getName(), facultyDto.getAddress(), facultyDto.getContactEmail());
     }
 
     public static FacultyDto map(Faculty faculty) {

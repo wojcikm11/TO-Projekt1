@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.dto.FacultyDto;
 import pl.edu.pw.service.FacultyService;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class FacultyRestController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public FacultyDto addFaculty(@RequestBody FacultyDto facultyDto) throws SQLException {
+    public FacultyDto addFaculty(@Valid @RequestBody FacultyDto facultyDto) throws SQLException {
         return service.add(facultyDto);
     }
 
@@ -40,7 +41,7 @@ public class FacultyRestController {
 
     @PutMapping("/update/{name}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String name, @RequestBody FacultyDto facultyDto) throws NotFoundException {
+    public void update(@PathVariable String name, @Valid @RequestBody FacultyDto facultyDto) throws NotFoundException {
         service.updateByName(name, facultyDto);
     }
 

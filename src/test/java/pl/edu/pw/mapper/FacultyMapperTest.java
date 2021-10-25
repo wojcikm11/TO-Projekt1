@@ -21,17 +21,16 @@ public class FacultyMapperTest {
 
         Faculty expected = new Faculty(name, address, contactEmail);
         Faculty actual = FacultyMapper.map(facultyDto);
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
-
 
 
     @Test
     void facultyDto_to_faculty_passNull() {
-            assertThrows(NullPointerException.class,()->{
-                FacultyDto faculty =null;
-                FacultyMapper.map(faculty);
-            });
+        assertThrows(NullPointerException.class, () -> {
+            FacultyDto faculty = null;
+            FacultyMapper.map(faculty);
+        });
     }
 
 
@@ -49,8 +48,8 @@ public class FacultyMapperTest {
 
     @Test
     void faculty_to_facultyDto_passNull() {
-        assertThrows(NullPointerException.class,()->{
-            Faculty faculty =null;
+        assertThrows(NullPointerException.class, () -> {
+            Faculty faculty = null;
             FacultyMapper.map(faculty);
         });
     }

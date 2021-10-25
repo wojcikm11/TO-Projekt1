@@ -1,7 +1,5 @@
 package pl.edu.pw.entity;
 
-import pl.edu.pw.dto.FacultyDto;
-
 import javax.persistence.*;
 
 @Entity
